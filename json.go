@@ -10,8 +10,10 @@ import (
 )
 
 type Item struct {
-	Title string `json:"title"`
-	Image string `json:"image"`
+	Title    string `json:"title"`
+	Image    string `json:"image"`
+	Category string `json:"category"`
+	Code     string `json:"code"`
 }
 
 func main() {
@@ -39,14 +41,18 @@ func main() {
 		// Создаем слайс для хранения извлеченных данных
 		items := []Item{}
 
-		doc.Find(".item-wrap").Each(func(index int, element *goquery.Selection) {
+		doc.Find(".product-item").Each(func(index int, element *goquery.Selection) {
 			img, _ := element.Find("img").Attr("src")
-
 			title := element.Find(".name").Text()
+			category := element.Find(".category").Text()
+			code := element.Find(".code").Text()
+
 			// Создаем новый элемент и добавляем его в слайс
 			item := Item{
-				Title: title,
-				Image: "https://arpa-hpl.ru" + img,
+				Title:    title,
+				Image:    "https://arpa-hpl.ru" + img,
+				Category: category,
+				Code:     code,
 			}
 			items = append(items, item)
 		})
