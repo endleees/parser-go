@@ -1,9 +1,11 @@
 package main
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -31,6 +33,7 @@ func main() {
 			log.Fatal(err)
 		}
 		defer response.Body.Close()
+		fmt.Println(response)
 
 		// Загружаем HTML-страницу для парсинга
 		doc, err := goquery.NewDocumentFromReader(response.Body)
@@ -46,11 +49,22 @@ func main() {
 			title := element.Find(".name").Text()
 			category := element.Find(".category").Text()
 			code := element.Find(".code").Text()
+			fullUrlImage := "https://arpa-hpl.ru" + img
+			resp, err := http.Get(fullUrlImage)
+			if err != nil {
+				log.Fatal(err)
+			}
+			defer resp.Body.Close()
+			imageBytes, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				log.Fatal(err)
+			}
+			base64String := base64.StdEncoding.EncodeToString(imageBytes)
 
 			// Создаем новый элемент и добавляем его в слайс
 			item := Item{
 				Title:    title,
-				Image:    "https://arpa-hpl.ru" + img,
+				Image:    base64String,
 				Category: category,
 				Code:     code,
 			}

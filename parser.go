@@ -18,9 +18,11 @@ func main() {
 
 	// Загружаем HTML документ с использованием goquery
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
+
 	if err != nil {
 		log.Fatal("Ошибка при загрузке HTML:", err)
 	}
+	fmt.Print(doc)
 
 	// Извлекаем все теги <a> и выводим их содержимое и атрибуты
 	doc.Find("a").Each(func(i int, s *goquery.Selection) {
